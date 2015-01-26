@@ -3,15 +3,21 @@ package com.xiaobin.security.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.xiaobin.security.R;
 
 public class SetupGuide3Activity extends Activity implements OnGestureListener{
 	
 	private GestureDetector mGestureDetector; 
+	private Button button;
+	private EditText editText;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +26,31 @@ public class SetupGuide3Activity extends Activity implements OnGestureListener{
 		setContentView(R.layout.setup_guide3);
 		mGestureDetector = new GestureDetector(this,this);
 		mGestureDetector.setIsLongpressEnabled(true);
+		
+		button = (Button)findViewById(R.id.bt_guide_select);
+		editText = (EditText)findViewById(R.id.et_guide_phoneNumber);
+		
+		button.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(SetupGuide3Activity.this,SelectContactActivity.class);
+				startActivityForResult(intent,1);
+				
+			}
+			
+		});
+		
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (data != null)
+		{
+			String number = data.getStringExtra("number");
+			editText.setText(number);
+		}
 	}
 
 	@Override

@@ -38,4 +38,9 @@
     <string name="pervious">上一步</string>
     <string name="finish">完成</string>
     <string name="selectContact">选择联系人</string>   
+    <string name="alert">提醒</string>
+    <string name="alert_1">强烈建议您开启保护, 是否完成设置</string>
+	<string name="lostProtectedNumber">安全号码</string>
+    <string name="isProtected">已经开启保护</string>
+    <string name="rePlayGuide">重新进入设置向导</string>
 </resources>

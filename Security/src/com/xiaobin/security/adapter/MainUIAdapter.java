@@ -69,8 +69,8 @@ public class MainUIAdapter extends BaseAdapter
 		else{
 			view = convertView;
 			views = (MainViews)view.getTag();
-			views.imageView = (ImageView)view.findViewById(R.id.iv_main_icon);
-			views.textView = (TextView)view.findViewById(R.id.tv_main_name);
+//			views.imageView = (ImageView)view.findViewById(R.id.iv_main_icon);
+//			views.textView = (TextView)view.findViewById(R.id.tv_main_name);
 			views.imageView.setImageResource(ICONS[position]);
 			views.textView.setText(NAMES[position]);	
 		}

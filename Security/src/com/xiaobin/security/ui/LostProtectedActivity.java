@@ -10,7 +10,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xiaobin.security.R;
@@ -23,12 +27,16 @@ public class LostProtectedActivity extends Activity implements OnClickListener
 	private EditText password;
 	private EditText confirmPassword;
 	
+    private TextView tv_protectedNumber;  
+    private TextView tv_protectedGuide;  
+    private CheckBox cb_isProtected;  
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		
-		sp = getSharedPreferences("cofig", Context.MODE_PRIVATE);
+		sp = getSharedPreferences("config", Context.MODE_PRIVATE);
 		
 		if(isSetPassword())
 		{
@@ -77,6 +85,11 @@ public class LostProtectedActivity extends Activity implements OnClickListener
 		}
 		return true;
 	}
+	
+	private boolean isSetupGuide()
+	{
+		return sp.getBoolean("setupGuide", false);
+	}
 
 	@Override
 	public void onClick(View v)
@@ -98,6 +111,14 @@ public class LostProtectedActivity extends Activity implements OnClickListener
 						Editor editor = sp.edit();
 						editor.putString("password", MD5Encoder.encode(fp));
 						editor.commit();
+						dialog.dismiss();
+						
+						if (!isSetupGuide())
+						{
+							finish();
+							Intent intent = new Intent(this, SetupGuide1Activity.class); 
+							startActivity(intent);
+						}
 					}
 					else
 					{
@@ -117,15 +138,53 @@ public class LostProtectedActivity extends Activity implements OnClickListener
 				String pwd = password.getText().toString().toString();
 				if(pwd.equals(""))
 				{
-					Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, R.string.inputPassword, Toast.LENGTH_SHORT).show();
 				}
 				else
 				{
 					String str = sp.getString("password", "");
 					if(MD5Encoder.encode(pwd).equals(str))
 					{
-						Intent intent = new Intent(this,SetupGuide1Activity.class);
-						startActivity(intent);
+						if (isSetupGuide())
+						{
+							setContentView(R.layout.lost_protected);
+                            tv_protectedNumber = (TextView) findViewById(R.id.tv_lost_protected_number);  
+                            tv_protectedGuide = (TextView) findViewById(R.id.tv_lost_protected_guide);  
+                            cb_isProtected = (CheckBox) findViewById(R.id.cb_lost_protected_isProtected);  
+                              
+                            tv_protectedNumber.setText("手机安全号码为：" + sp.getString("number", ""));  
+                            tv_protectedGuide.setOnClickListener(this);  
+                              
+                            boolean isProtecting = sp.getBoolean("isProtected", false);  
+                            if(isProtecting)  
+                            {  
+                                cb_isProtected.setText(R.string.guide4_item2);  
+                                cb_isProtected.setChecked(true);  
+                            }  
+                              
+                            cb_isProtected.setOnCheckedChangeListener(new OnCheckedChangeListener()  
+                            {  
+                                @Override  
+                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)  
+                                {  
+                                    if(isChecked)  
+                                    {  
+                                        cb_isProtected.setText(R.string.guide4_item2);  
+                                        Editor editor = sp.edit();  
+                                        editor.putBoolean("isProtected", true);  
+                                        editor.commit();  
+                                    }  
+                                    else  
+                                    {  
+                                        cb_isProtected.setText(R.string.guide4_item1);  
+                                        Editor editor = sp.edit();  
+                                        editor.putBoolean("isProtected", false);  
+                                        editor.commit();  
+                                    }  
+                                }  
+                            }); 
+							
+						}
 						dialog.dismiss();
 					}
 					else
@@ -139,7 +198,11 @@ public class LostProtectedActivity extends Activity implements OnClickListener
 				dialog.dismiss();
 				finish();
 				break;
-				
+            case R.id.tv_lost_protected_guide : //重新进入设置向导  
+                finish();  
+                Intent setupGuideIntent = new Intent(this, SetupGuide1Activity.class);  
+                startActivity(setupGuideIntent);  
+                break;  
 			default : 
 				break;
 		}
