@@ -2,6 +2,8 @@ package com.xiaobin.security.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -15,6 +17,7 @@ import com.xiaobin.security.R;
 
 public class SetupGuide3Activity extends Activity implements OnGestureListener{
 	
+	private SharedPreferences sp;
 	private GestureDetector mGestureDetector; 
 	private Button button;
 	private EditText editText;
@@ -26,9 +29,17 @@ public class SetupGuide3Activity extends Activity implements OnGestureListener{
 		setContentView(R.layout.setup_guide3);
 		mGestureDetector = new GestureDetector(this,this);
 		mGestureDetector.setIsLongpressEnabled(true);
+		sp = getSharedPreferences("config",MODE_PRIVATE);
 		
 		button = (Button)findViewById(R.id.bt_guide_select);
 		editText = (EditText)findViewById(R.id.et_guide_phoneNumber);
+		
+		String number = sp.getString("number", null);
+		if (number != null)
+		{
+			editText.setText(number);
+		}
+		
 		
 		button.setOnClickListener(new OnClickListener(){
 
@@ -50,6 +61,9 @@ public class SetupGuide3Activity extends Activity implements OnGestureListener{
 		{
 			String number = data.getStringExtra("number");
 			editText.setText(number);
+			Editor editor = sp.edit();
+			editor.putString("number", number);
+			editor.commit();
 		}
 	}
 

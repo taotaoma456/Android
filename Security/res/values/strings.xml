@@ -24,7 +24,8 @@
     <string name="guide1_item4">远程锁屏</string>
     <string name="guide2">2.手机卡绑定</string>
     <string name="guide2_content">如果sim卡绑定，如果下次更换的话，就会自动发送短信</string>
-    <string name="guide2_item1">绑定</string>
+    <string name="guide2_item0">绑定</string>
+    <string name="guide2_item1">已经绑定</string>
     <string name="guide2_item2">没有绑定</string>
     <string name="guide3">3.设置安全号码</string>
     <string name="guide3_content">如果sim卡更换后，会把短信发送到该号码上</string>
