@@ -2,6 +2,8 @@ package com.xiaobin.security.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.xiaobin.security.R;
+import com.xiaobin.security.receiver.MyAdminReceiver;
 
 public class SetupGuide4Activity extends Activity implements OnGestureListener,OnClickListener {
 	
@@ -75,6 +78,25 @@ public class SetupGuide4Activity extends Activity implements OnGestureListener,O
 
 	}
 	
+	 private void finishSetupGuide() 
+	 {
+			Editor editor = sp.edit();
+			editor.putBoolean("setupGuide", true);
+			editor.commit();
+			
+			//拿到一个设备管理器  
+			DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE); 
+			 //new一个新的组件出来，用来启动注册管理器的界面  
+			ComponentName componentName = new ComponentName(this,MyAdminReceiver.class);
+			 //判断是否已经注册，没有就进行注册  
+			if (!devicePolicyManager.isAdminActive(componentName))
+			{
+				Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+				intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+				this.startActivity(intent);
+			}
+	 }
+	
 	@Override
 	public void onClick(View arg0) {
 		switch(arg0.getId())
@@ -83,9 +105,7 @@ public class SetupGuide4Activity extends Activity implements OnGestureListener,O
 			{
 				if (cb_protected.isChecked())
 				{
-					Editor editor = sp.edit();
-					editor.putBoolean("setupGuide", true);
-					editor.commit();
+					finishSetupGuide();
 					finish();
 				}
 				else
@@ -97,9 +117,7 @@ public class SetupGuide4Activity extends Activity implements OnGestureListener,O
 					builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface arg0, int arg1) {
-							Editor editor = sp.edit();
-							editor.putBoolean("setupGuide", true);
-							editor.commit();
+							finishSetupGuide();
 							
 							finish();
 							
